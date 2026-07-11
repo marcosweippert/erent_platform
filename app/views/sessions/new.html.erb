@@ -1,0 +1,35 @@
+<div class="min-h-screen bg-slate-950 flex items-center justify-center py-12">
+  <div class="w-full max-w-md bg-slate-900/95 border border-emerald-800 p-8 rounded-3xl shadow-2xl">
+    <h1 class="text-3xl font-bold mb-6 text-center text-emerald-300">eRent</h1>
+
+    <% if flash[:alert] %>
+      <div class="mb-4 rounded border border-red-300 bg-red-50 p-4 text-red-700 text-sm">
+        <%= flash[:alert] %>
+      </div>
+    <% end %>
+
+    <% if flash[:notice] %>
+      <div class="mb-4 rounded border border-green-300 bg-green-50 p-4 text-green-700 text-sm">
+        <%= flash[:notice] %>
+      </div>
+    <% end %>
+
+    <%= form_with url: session_path, scope: :session, local: true do |form| %>
+      <div class="mb-4">
+        <%= form.label :email, "Email", class: "block font-semibold mb-1 text-gray-700" %>
+        <%= form.email_field :email, class: "w-full rounded border border-gray-300 px-3 py-2", autofocus: true %>
+      </div>
+
+      <div class="mb-6">
+        <%= form.label :password, "Senha", class: "block font-semibold mb-1 text-gray-700" %>
+        <%= form.password_field :password, class: "w-full rounded border border-gray-300 px-3 py-2" %>
+      </div>
+
+      <%= form.submit "Entrar", class: "w-full btn btn-primary" %>
+    <% end %>
+
+    <div class="mt-6 text-sm text-center">
+      <%= link_to "Esqueci minha senha", new_forgot_password_path, class: "btn btn-ghost btn-sm" %>
+    </div>
+  </div>
+</div>

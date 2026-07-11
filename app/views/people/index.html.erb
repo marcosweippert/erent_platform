@@ -1,0 +1,40 @@
+<div class="container mx-auto px-4 py-6">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-semibold text-emerald-500 flex items-center gap-2">👥 Pessoas</h1>
+    <%= link_to 'Nova Pessoa', new_person_path, class: 'btn btn-primary' %>
+  </div>
+
+  <div class="bg-white shadow-md rounded-lg overflow-hidden border border-gray-200">
+    <table class="min-w-full text-sm text-left text-gray-800">
+      <thead class="bg-gray-100 text-gray-700">
+        <tr>
+          <th class="py-3 px-4">ID</th>
+          <th class="py-3 px-4">Nome</th>
+          <th class="py-3 px-4">CPF</th>
+          <th class="py-3 px-4">Tipo</th>
+          <th class="py-3 px-4">Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @people.each do |person| %>
+          <tr class="border-t hover:bg-gray-50 transition duration-200">
+            <td class="py-2 px-4"><%= person.id %></td>
+            <td class="py-2 px-4"><%= person.name %></td>
+            <td class="py-2 px-4"><%= person.cpf %></td>
+            <td class="py-2 px-4"><%= t("activerecord.attributes.person.person_type.#{person.person_type}") if person.person_type.present? %></td>
+            <td class="py-2 px-4">
+              <div class="flex gap-x-2 items-center">
+                <%= link_to 'Detalhe', person_path(person), class: 'btn btn-ghost' %>
+                <%= button_to 'Excluir', person_path(person), method: :delete, data: { turbo_confirm: 'Tem certeza que deseja excluir essa pessoa?' }, class: 'btn btn-danger' %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="mt-6">
+    <%= link_to 'Voltar', root_path, class: 'btn btn-ghost btn-xs' %>
+  </div>
+</div>

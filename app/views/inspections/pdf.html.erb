@@ -1,0 +1,35 @@
+<div style="font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5;">
+  <h1 style="text-align: center;">TERMO DE VISTORIA</h1>
+
+  <p><strong>Contrato:</strong> #<%= @inspection.contract_id %></p>
+  <p><strong>Imóvel:</strong> <%= @inspection.property.reference %> - <%= @inspection.property.street %>, <%= @inspection.property.number %></p>
+  <p><strong>Tipo:</strong> <%= @inspection.inspection_type&.humanize || '-' %></p>
+  <p><strong>Natureza:</strong> <%= @inspection.entry_type&.humanize || '-' %></p>
+  <p><strong>Data:</strong> <%= @inspection.inspection_date.present? ? l(@inspection.inspection_date, format: '%d/%m/%Y') : '-' %></p>
+  <p><strong>Status:</strong> <%= @inspection.status&.humanize || '-' %></p>
+  <p><strong>Vistoriador:</strong> <%= @inspection.inspector_name.presence || '-' %></p>
+
+  <h3>Itens avaliados</h3>
+  <% selected_items = @inspection.selected_checklist_items %>
+  <% if selected_items.present? %>
+    <ul>
+      <% selected_items.each do |_, item| %>
+        <li>
+          <strong><%= item["label"] %></strong> — <%= item["status"].presence || 'ok' %>
+          <% if item["observation"].present? %>
+            <br />Observação: <%= item["observation"] %>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p>Vistoria de entrada ou saída não realizado.</p>
+  <% end %>
+
+  <h3>Observações</h3>
+  <p><%= simple_format(@inspection.observations) %></p>
+
+  <h3>Partes</h3>
+  <p><strong>Locador:</strong> <%= @inspection.landlord_name %> | CPF: <%= @inspection.landlord_document %></p>
+  <p><strong>Locatário:</strong> <%= @inspection.tenant_name %> | CPF: <%= @inspection.tenant_document %></p>
+</div>

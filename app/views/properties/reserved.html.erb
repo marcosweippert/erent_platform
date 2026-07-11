@@ -1,0 +1,49 @@
+<div class="container mx-auto px-4 py-6">
+  <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-6">
+    <div>
+      <h1 class="text-3xl font-semibold text-emerald-500">Imóveis Reservados</h1>
+      <p class="text-sm text-slate-500 dark:text-slate-400">Veja os imóveis atualmente em reserva e o histórico dos contratos reservados.</p>
+    </div>
+    <%= link_to 'Voltar para imóveis', properties_path, class: 'btn btn-ghost' %>
+  </div>
+
+  <div class="overflow-x-auto bg-white rounded-3xl shadow border border-slate-200 dark:bg-slate-950/95 dark:border-slate-800">
+    <table class="min-w-full text-sm text-left text-slate-700 dark:text-slate-200">
+      <thead class="bg-slate-50 dark:bg-slate-900">
+        <tr>
+          <th class="px-4 py-3">ID</th>
+          <th class="px-4 py-3">Referência</th>
+          <th class="px-4 py-3">Imóvel</th>
+          <th class="px-4 py-3">Inquilino</th>
+          <th class="px-4 py-3">Período</th>
+          <th class="px-4 py-3">Status</th>
+          <th class="px-4 py-3">Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @properties.each do |property| %>
+          <% reservation = property.current_reserved_contract %>
+          <tr class="border-t border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900">
+            <td class="px-4 py-3"><%= property.id %></td>
+            <td class="px-4 py-3"><%= property.reference %></td>
+            <td class="px-4 py-3"><%= property.street %>, <%= property.number %> - <%= property.city %>/<%= property.state %></td>
+            <td class="px-4 py-3"><%= reservation&.tenant&.name || 'N/A' %></td>
+            <td class="px-4 py-3"><%= reservation.present? ? "#{l(reservation.start_date, format: '%d/%m/%Y')} a #{l(reservation.end_date, format: '%d/%m/%Y')}" : '-' %></td>
+            <td class="px-4 py-3">Reservado</td>
+            <td class="px-4 py-3">
+              <div class="flex flex-wrap gap-2">
+                <%= link_to 'Detalhes', property_path(property), class: 'btn btn-ghost text-xs' %>
+                <% if reservation %>
+                  <%= link_to 'Contrato', contract_path(reservation), class: 'btn btn-accent text-xs' %>
+                <% end %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <% if @properties.empty? %>
+      <div class="p-6 text-slate-600 dark:text-slate-400">Nenhum imóvel reservado no momento.</div>
+    <% end %>
+  </div>
+</div>

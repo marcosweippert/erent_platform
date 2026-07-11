@@ -1,0 +1,148 @@
+<div class="container mx-auto px-4 py-6">
+  <h1 class="text-3xl font-bold text-emerald-500 mb-6">Registrar Vistoria</h1>
+
+  <%= form_with model: [@contract, @inspection], local: true, class: "space-y-6" do |f| %>
+    <div class="bg-white shadow rounded p-6 space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <%= f.label :inspection_type, "Tipo de vistoria", class: "block text-sm font-medium text-gray-700" %>
+          <%= f.select :inspection_type, Inspection.inspection_types.keys.map { |k| [k.humanize, k] }, {}, class: "mt-1 block w-full border rounded px-3 py-2" %>
+        </div>
+        <div>
+          <%= f.label :entry_type, "Natureza", class: "block text-sm font-medium text-gray-700" %>
+          <%= f.select :entry_type, Inspection.entry_types.keys.map { |k| [k.humanize, k] }, {}, class: "mt-1 block w-full border rounded px-3 py-2" %>
+        </div>
+        <div>
+          <%= f.label :inspection_date, "Data da vistoria", class: "block text-sm font-medium text-gray-700" %>
+          <%= f.date_field :inspection_date, value: @inspection.inspection_date || Date.current, class: "mt-1 block w-full border rounded px-3 py-2" %>
+        </div>
+        <div>
+          <%= f.label :status, "Status", class: "block text-sm font-medium text-gray-700" %>
+          <%= f.select :status, Inspection.statuses.keys.map { |k| [k.humanize, k] }, {}, class: "mt-1 block w-full border rounded px-3 py-2" %>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="text-lg font-semibold text-gray-800 mb-2">Dados do imóvel</h2>
+        <p class="text-sm text-gray-600">Imóvel: <%= @contract.property.reference %> - <%= @contract.property.street %>, <%= @contract.property.number %></p>
+        <p class="text-sm text-gray-600">Contrato: #<%= @contract.id %> | Inquilino: <%= @contract.tenant.name %></p>
+      </div>
+
+      <div>
+        <h2 class="text-lg font-semibold text-gray-800 mb-2">Itens da vistoria</h2>
+        <p class="text-sm text-gray-600 mb-3">Selecione os itens que serão avaliados e registre a situação de cada um.</p>
+
+        <div class="flex flex-col md:flex-row gap-3 mb-4">
+          <%= select_tag :inspection_item_selector, options_for_select(@inspection.default_checklist.map { |key, item| [item["label"], key] }), include_blank: "Adicionar item", class: "border rounded px-3 py-2 text-sm" %>
+          <button type="button" id="add-inspection-item" class="inline-flex items-center justify-center rounded bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700">Adicionar item</button>
+        </div>
+
+        <div id="inspection-items-container" class="grid grid-cols-1 gap-3"></div>
+      </div>
+
+      <div>
+        <h2 class="text-lg font-semibold text-gray-800 mb-2">Observações</h2>
+        <%= f.text_area :observations, rows: 4, class: "mt-1 block w-full border rounded px-3 py-2" %>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <%= f.label :inspector_name, "Nome do vistoriador", class: "block text-sm font-medium text-gray-700" %>
+          <%= f.text_field :inspector_name, class: "mt-1 block w-full border rounded px-3 py-2" %>
+        </div>
+        <div>
+          <%= f.label :landlord_name, "Nome do locador", class: "block text-sm font-medium text-gray-700" %>
+          <%= f.text_field :landlord_name, class: "mt-1 block w-full border rounded px-3 py-2" %>
+        </div>
+        <div>
+          <%= f.label :tenant_name, "Nome do locatário", class: "block text-sm font-medium text-gray-700" %>
+          <%= f.text_field :tenant_name, class: "mt-1 block w-full border rounded px-3 py-2" %>
+        </div>
+        <div>
+          <%= f.label :landlord_document, "CPF do locador", class: "block text-sm font-medium text-gray-700" %>
+          <%= f.text_field :landlord_document, class: "mt-1 block w-full border rounded px-3 py-2" %>
+        </div>
+        <div>
+          <%= f.label :tenant_document, "CPF do locatário", class: "block text-sm font-medium text-gray-700" %>
+          <%= f.text_field :tenant_document, class: "mt-1 block w-full border rounded px-3 py-2" %>
+        </div>
+        <div>
+          <%= f.label :landlord_signature_date, "Data da assinatura do locador", class: "block text-sm font-medium text-gray-700" %>
+          <%= f.date_field :landlord_signature_date, value: @inspection.landlord_signature_date || Date.current, class: "mt-1 block w-full border rounded px-3 py-2" %>
+        </div>
+        <div>
+          <%= f.label :tenant_signature_date, "Data da assinatura do locatário", class: "block text-sm font-medium text-gray-700" %>
+          <%= f.date_field :tenant_signature_date, value: @inspection.tenant_signature_date || Date.current, class: "mt-1 block w-full border rounded px-3 py-2" %>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-wrap gap-2">
+      <%= f.submit "Finalizar vistoria", class: "btn btn-accent", name: "commit" %>
+      <%= f.submit "Salvar com ressalvas", class: "btn btn-ghost", name: "commit" %>
+      <%= f.submit "Cancelar", class: "btn btn-danger", name: "commit" %>
+      <%= link_to "Voltar", contract_path(@contract), class: "btn btn-ghost" %>
+    </div>
+  <% end %>
+</div>
+
+<script>
+  function initializeInspectionItemAdder() {
+    const selector = document.getElementById("inspection_item_selector");
+    const addButton = document.getElementById("add-inspection-item");
+    const container = document.getElementById("inspection-items-container");
+
+    if (!selector || !addButton || !container) return;
+
+    const selectedKeys = new Set();
+
+    const buildCard = (key, label) => {
+      const card = document.createElement("div");
+      card.className = "border rounded p-3 space-y-2";
+      card.setAttribute("data-item-key", key);
+      card.innerHTML = `
+        <div class="flex items-center justify-between gap-3">
+          <label class="flex items-center gap-2 font-medium text-gray-700">
+            <input type="checkbox" name="inspection[checklist][${key}][value]" value="true" class="rounded" />
+            <span>${label}</span>
+          </label>
+          <select name="inspection[checklist][${key}][status]" class="border rounded px-2 py-1 text-sm">
+            <option value="">Selecione</option>
+            <option value="ok">OK</option>
+            <option value="defect">Com defeito</option>
+            <option value="na">Não aplicável</option>
+          </select>
+        </div>
+        <input type="hidden" name="inspection[checklist][${key}][label]" value="${label}" />
+        <textarea name="inspection[checklist][${key}][observation]" rows="2" placeholder="Observação sobre este item" class="mt-1 block w-full border rounded px-3 py-2 text-sm"></textarea>
+        <button type="button" class="text-sm text-red-600" data-remove-item>Remover</button>
+      `;
+
+      card.querySelector("[data-remove-item]").addEventListener("click", function () {
+        card.remove();
+        selectedKeys.delete(key);
+      });
+
+      return card;
+    };
+
+    addButton.replaceWith(addButton.cloneNode(true));
+    const freshAddButton = document.getElementById("add-inspection-item");
+
+    freshAddButton.addEventListener("click", function (event) {
+      event.preventDefault();
+      const key = selector.value;
+      if (!key || selectedKeys.has(key)) return;
+
+      const option = selector.options[selector.selectedIndex];
+      if (!option) return;
+
+      container.appendChild(buildCard(key, option.text));
+      selectedKeys.add(key);
+      selector.value = "";
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", initializeInspectionItemAdder);
+  document.addEventListener("turbo:load", initializeInspectionItemAdder);
+</script>

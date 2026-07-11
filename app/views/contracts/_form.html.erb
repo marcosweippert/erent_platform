@@ -1,0 +1,270 @@
+<div class="bg-white p-6 rounded shadow">
+  <%# Helper styles %>
+  <% label_class = "block text-sm font-medium text-gray-700 mb-1" %>
+  <% input_class = "w-full py-1 px-2 border border-gray-300 rounded bg-gray-50 text-sm" %>
+  <% select_class = "w-full py-1 px-2 border border-gray-300 rounded bg-gray-50 text-sm" %>
+
+  <%= form_with(model: contract, local: true) do |form| %>
+    <div class="space-y-8">
+
+      <!-- Seção 1: Identificação -->
+      <div class="space-y-4">
+        <div class="border-b border-gray-200 pb-2">
+          <h2 class="text-sm font-semibold text-emerald-600 uppercase tracking-wide">Identificação</h2>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <%= form.label :property_id, "Imóvel", class: label_class %>
+            <%= form.collection_select :property_id, 
+                  Property.where(status: :available).or(Property.where(id: contract.property_id)).distinct, 
+                  :id, :street, { prompt: "Selecione o imóvel" }, class: select_class %>
+          </div>
+
+          <div>
+            <%= form.label :tenant_id, "Inquilino", class: label_class %>
+            <%= form.collection_select :tenant_id, 
+                  Person.where(person_type: :tenant, status: :available)
+                        .or(Person.where(id: contract.tenant_id)).distinct, 
+                  :id, :name, { prompt: "Selecione o inquilino" }, class: select_class %>
+          </div>
+
+          <%= form.hidden_field :owner_id %>
+        </div>
+      </div>
+
+      <!-- Seção 2: Período do Contrato -->
+      <div class="space-y-4">
+        <div class="border-b border-gray-200 pb-2">
+          <h2 class="text-sm font-semibold text-emerald-600 uppercase tracking-wide">Período do Contrato</h2>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <%= form.label :contract_period, "Período", class: label_class %>
+            <%= form.select :contract_period, Contract.contract_periods.map { |key, value| ["#{value} Meses", key] }, 
+                  { prompt: "Selecione o período" }, class: select_class %>
+          </div>
+
+          <div>
+            <%= form.label :start_date, "Data Início", class: label_class %>
+            <%= form.date_field :start_date, class: input_class %>
+          </div>
+
+          <div>
+            <%= form.label :end_date, "Data Fim", class: label_class %>
+            <%= form.date_field :end_date, class: input_class %>
+          </div>
+
+          <div>
+            <%= form.label :signature_date, "Data Assinatura", class: label_class %>
+            <%= form.date_field :signature_date, class: input_class %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Seção 3: Pagamento -->
+      <div class="space-y-4">
+        <div class="border-b border-gray-200 pb-2">
+          <h2 class="text-sm font-semibold text-emerald-600 uppercase tracking-wide">Pagamento</h2>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <%= form.label :rent_value, "Valor do Aluguel", class: label_class %>
+            <%= form.text_field :rent_value, class: input_class %>
+          </div>
+
+          <div>
+            <%= form.label :payment_method, "Método de Pagamento", class: label_class %>
+            <%= form.select :payment_method, Contract.payment_methods.keys.map { |p| [p, p] }, 
+                  { prompt: "Selecione o método" }, class: select_class %>
+          </div>
+
+          <div>
+            <%= form.label :payment_day, "Dia de Pagamento", class: label_class %>
+            <%= form.select :payment_day, Contract.payment_days.map { |key, value| ["#{value}", key] }, 
+                  { prompt: "Selecione o dia" }, class: select_class %>
+          </div>
+
+          <div>
+            <%= form.label :first_payment_date, "Data 1º Pagamento", class: label_class %>
+            <%= form.date_field :first_payment_date, class: input_class %>
+          </div>
+
+          <div>
+            <%= form.label :first_payment_value, "Valor 1º Pagamento", class: label_class %>
+            <%= form.text_field :first_payment_value, class: input_class %>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <%= form.label :interest_rate, "Juros (%)", class: label_class %>
+              <%= form.text_field :interest_rate, class: input_class %>
+            </div>
+
+            <div>
+              <%= form.label :fine_rate, "Multa (%)", class: label_class %>
+              <%= form.text_field :fine_rate, class: input_class %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Seção 4: Garantia -->
+      <div class="space-y-4">
+        <div class="border-b border-gray-200 pb-2">
+          <h2 class="text-sm font-semibold text-emerald-600 uppercase tracking-wide">Garantia</h2>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <%= form.label :guarantee, "Tipo de Garantia", class: label_class %>
+            <%= form.text_field :guarantee, class: input_class %>
+          </div>
+
+          <div>
+            <%= form.label :guarantee_value, "Valor Caução", class: label_class %>
+            <%= form.text_field :guarantee_value, class: input_class %>
+          </div>
+
+          <div>
+            <%= form.label :guarantee_payment_date, "Data Pagamento Caução", class: label_class %>
+            <%= form.date_field :guarantee_payment_date, class: input_class %>
+          </div>
+
+          <div>
+            <%= form.label :guarantee_installments, "Parcelas Garantia", class: label_class %>
+            <%= form.select :guarantee_installments, (1..6).map { |n| ["#{n}x", n] }, 
+                  { prompt: "Selecione as parcelas" }, class: select_class %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Botão de Submit -->
+      <div class="pt-4 flex gap-2">
+        <%= form.submit 'Salvar', class: "bg-green-600 text-white text-xs px-2 py-1 rounded hover:bg-green-700" %>
+        <%= link_to 'Voltar', contracts_path, class: "btn btn-ghost text-xs" %>
+      </div>
+    </div>
+  <% end %>
+</div>
+<script>
+  function initializeContractAutoFill() {
+    const propertySelect = document.querySelector("#contract_property_id");
+    const ownerSelect = document.querySelector("#contract_owner_id");
+    const rentValueInput = document.querySelector("#contract_rent_value");
+
+    const startDateInput = document.querySelector("#contract_start_date");
+    const endDateInput = document.querySelector("#contract_end_date");
+    const periodSelect = document.querySelector("#contract_contract_period");
+
+    const signatureDateInput = document.querySelector("#contract_signature_date");
+    const firstPaymentDate = document.querySelector("#contract_first_payment_date");
+    const guaranteePaymentDate = document.querySelector("#contract_guarantee_payment_date");
+    const interestRateInput = document.querySelector("#contract_interest_rate");
+    const fineRateInput = document.querySelector("#contract_fine_rate");
+    const guaranteeInput = document.querySelector("#contract_guarantee");
+    const guaranteeValueInput = document.querySelector("#contract_guarantee_value");
+
+    const buildUrl = (path, params) => {
+      const url = new URL(path, window.location.origin);
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== "") {
+          url.searchParams.set(key, value);
+        }
+      });
+      return url;
+    };
+
+    const loadPropertyData = (propertyId) => {
+      if (!propertyId || !ownerSelect || !rentValueInput) return;
+
+      fetch(buildUrl("/contracts/load_property_data", { property_id: propertyId }), {
+        headers: { Accept: "application/json" }
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.owner_id) ownerSelect.value = data.owner_id;
+          if (data.rent_value) rentValueInput.value = data.rent_value;
+        })
+        .catch(() => {});
+    };
+
+    if (propertySelect) {
+      propertySelect.addEventListener("change", function () {
+        loadPropertyData(this.value);
+      });
+
+      if (propertySelect.value) {
+        loadPropertyData(propertySelect.value);
+      }
+    }
+
+    const updateEndDate = () => {
+      if (!startDateInput || !periodSelect || !endDateInput) return;
+
+      const start = startDateInput.value;
+      const period = periodSelect.value;
+      if (start && period) {
+        fetch(buildUrl("/contracts/calculate_dates", {
+          start_date: start,
+          contract_period: period,
+          rent_value: rentValueInput?.value || 0
+        }), {
+          headers: { Accept: "application/json" }
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.end_date) endDateInput.value = data.end_date;
+          })
+          .catch(() => {});
+      }
+    };
+
+    const updateFieldsFromSignature = () => {
+      if (!startDateInput || !periodSelect || !signatureDateInput || !rentValueInput) return;
+
+      const start = startDateInput.value;
+      const period = periodSelect.value;
+      const signature = signatureDateInput.value;
+      const rent = rentValueInput.value;
+      if (start && period && signature && rent) {
+        fetch(buildUrl("/contracts/calculate_dates", {
+          start_date: start,
+          contract_period: period,
+          signature_date: signature,
+          rent_value: rent
+        }), {
+          headers: { Accept: "application/json" }
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (firstPaymentDate && data.first_payment_date) firstPaymentDate.value = data.first_payment_date;
+            if (guaranteePaymentDate && data.guarantee_payment_date) guaranteePaymentDate.value = data.guarantee_payment_date;
+            if (interestRateInput && data.interest_rate !== undefined) interestRateInput.value = data.interest_rate;
+            if (fineRateInput && data.fine_rate !== undefined) fineRateInput.value = data.fine_rate;
+            if (guaranteeInput && data.guarantee) guaranteeInput.value = data.guarantee;
+            if (guaranteeValueInput && data.guarantee_value) guaranteeValueInput.value = data.guarantee_value;
+          })
+          .catch(() => {});
+      }
+    };
+
+    startDateInput?.addEventListener("change", updateEndDate);
+    periodSelect?.addEventListener("change", updateEndDate);
+    signatureDateInput?.addEventListener("change", updateFieldsFromSignature);
+
+    if (startDateInput?.value && periodSelect?.value) {
+      updateEndDate();
+    }
+
+    if (startDateInput?.value && periodSelect?.value && signatureDateInput?.value && rentValueInput?.value) {
+      updateFieldsFromSignature();
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", initializeContractAutoFill);
+  document.addEventListener("turbo:load", initializeContractAutoFill);
+  document.addEventListener("turbo:render", initializeContractAutoFill);
+</script>

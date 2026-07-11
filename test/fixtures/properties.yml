@@ -1,0 +1,31 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  reference: MyString
+  zip_code: MyString
+  street: MyString
+  neighborhood: MyString
+  number: MyString
+  city: MyString
+  state: MyString
+  complement: MyString
+  rent_value: 9.99
+  property_type: 1
+  category: 1
+  status: 1
+  owner: one
+
+two:
+  reference: MyString
+  zip_code: MyString
+  street: MyString
+  neighborhood: MyString
+  number: MyString
+  city: MyString
+  state: MyString
+  complement: MyString
+  rent_value: 9.99
+  property_type: 1
+  category: 1
+  status: 1
+  owner: two

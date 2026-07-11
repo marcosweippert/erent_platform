@@ -1,0 +1,40 @@
+<div class="max-w-4xl mx-auto p-6 bg-white rounded shadow">
+  <h1 class="text-2xl font-bold mb-6">Detalhes do Termo Aditivo</h1>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+    <div>
+      <h2 class="text-lg font-semibold mb-2">Imóvel</h2>
+      <p><strong>Referência:</strong> <%= @contract_amendment.contract.property.reference %></p>
+      <p><strong>Rua:</strong> <%= @contract_amendment.contract.property.street %></p>
+      <p><strong>Complemento:</strong> <%= @contract_amendment.contract.property.complement %></p>
+    </div>
+    <div>
+      <h2 class="text-lg font-semibold mb-2">Inquilino</h2>
+      <p><%= @contract_amendment.contract.tenant.name %></p>
+    </div>
+    <div>
+      <h2 class="text-lg font-semibold mb-2">Proprietário</h2>
+      <p><%= @contract_amendment.contract.owner.name %></p>
+    </div>
+    <div>
+      <h2 class="text-lg font-semibold mb-2">Valor</h2>
+      <p><%= number_to_currency(@contract_amendment.amendment_rent_value, unit: "R$ ", separator: ",", delimiter: ".") %></p>
+    </div>
+    <div>
+      <h2 class="text-lg font-semibold mb-2">Início</h2>
+      <p><%= l @contract_amendment.amendment_start_date, format: "%d/%m/%Y" %></p>
+    </div>
+    <div>
+      <h2 class="text-lg font-semibold mb-2">Término</h2>
+      <p><%= l @contract_amendment.amendment_end_date, format: "%d/%m/%Y" %></p>
+    </div>
+    <div>
+      <h2 class="text-lg font-semibold mb-2">Período</h2>
+      <p><%= @contract_amendment.amendment_contract_period %> Meses</p>
+    </div>
+  </div>
+  <div class="flex space-x-3">
+    <%= link_to 'Editar', edit_contract_amendment_path(@contract_amendment), class: "btn btn-primary" %>
+    <%= link_to 'Excluir', contract_amendment_path(@contract_amendment), method: :delete, data: { confirm: "Tem certeza que deseja excluir este termo aditivo?" }, class: "btn btn-danger" %>
+    <%= link_to 'Voltar', contract_amendments_path, class: "btn btn-ghost" %>
+  </div>
+</div>

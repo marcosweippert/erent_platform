@@ -1,0 +1,81 @@
+<div class="container mx-auto px-4">
+  <h1 class="text-3xl font-bold text-emerald-600 mb-3">Detalhes da Pessoa</h1>
+
+  <div class="bg-white shadow rounded p-6 space-y-8">
+    <div class="border-b pb-1">
+      <h2 class="text-lg font-semibold text-gray-800 mb-1">👤 Dados Pessoais</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-0">
+        <p><strong>Nome:</strong> <%= @person.name %></p>
+        <p><strong>CPF:</strong> <%= @person.cpf %></p>
+        <p><strong>RG:</strong> <%= @person.rg %></p>
+        <p><strong>Estado Civil:</strong> <%= @person.marital_status %></p>
+        <p><strong>Nacionalidade:</strong> <%= @person.nationality %></p>
+        <p><strong>Status:</strong> <%= t("activerecord.attributes.person.status.#{@person.status}") if @person.status.present? %></p>
+        <p><strong>Tipo:</strong> <%= t("activerecord.attributes.person.person_type.#{@person.person_type}") if @person.person_type.present? %></p>
+        <p><strong>Telefone:</strong> <%= @person.phone %></p>
+        <p><strong>Email:</strong> <%= @person.email %></p>
+      </div>
+    </div>
+
+
+    <div class="border-b pb-1">
+      <h2 class="text-lg font-semibold text-gray-800 mb-1">🏠 Endereço</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-0">
+        <p><strong>Rua:</strong> <%= @person.street %></p>
+        <p><strong>Número:</strong> <%= @person.number %></p>
+        <p><strong>Bairro:</strong> <%= @person.neighborhood %></p>
+        <p><strong>Cidade:</strong> <%= @person.city %></p>
+        <p><strong>Estado:</strong> <%= @person.state %></p>
+        <p><strong>CEP:</strong> <%= @person.zip_code %></p>
+        <p><strong>Complemento:</strong> <%= @person.complement %></p>
+      </div>
+    </div>
+
+    <div>
+      <h2 class="text-lg font-semibold text-gray-800 mb-1">📝 Observações</h2>
+      <%= form_with model: @person, url: person_path(@person), method: :patch, local: true do |f| %>
+        <div class="bg-gray-50 p-3 rounded border border-gray-200">
+          <%= f.text_area :observations, rows: 4, class: "w-full text-sm border border-gray-300 rounded p-2 focus:outline-none focus:ring" %>
+        </div>
+        <div class="mt-2">
+          <%= f.submit "Inserir Observação", class: "btn btn-primary" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<div class="mt-8">
+  <h2 class="text-lg font-semibold text-gray-800 mb-2">📎 Arquivos Anexados</h2>
+
+  <% if @person.documents.attached? %>
+    <ul class="space-y-2">
+      <% @person.documents.each do |document| %>
+        <li class="flex items-center justify-between border p-2 rounded bg-white">
+          <%= link_to document.filename.to_s, rails_blob_path(document, disposition: "attachment"), class: "text-emerald-500 hover:underline text-sm" %>
+          <%= button_to 'Excluir', attachment_path(document), method: :delete, data: { confirm: 'Tem certeza?' }, class: "btn btn-error btn-xs" %>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p class="text-sm text-gray-600">Nenhum arquivo anexado.</p>
+  <% end %>
+
+  <%= form_with model: @person,
+              url: upload_files_person_path(@person),
+              method: :post,
+              local: true,
+              html: { multipart: true, data: { turbo: false } },
+              class: "mt-4" do |f| %>
+    <div class="mt-4">
+      <label for="upload" class="cursor-pointer inline-block btn btn-ghost">
+        Selecionar Arquivos
+      </label>
+      <%= f.file_field :documents, multiple: true, name: "person[documents][]", id: "upload", class: "hidden" %>
+      <%= f.submit "Enviar Arquivos", class: "ml-2 bg-green-600 text-white text-xs px-2 py-1 rounded hover:bg-green-700" %>
+    </div>
+  <% end %>
+</div>
+  <div class="mt-6 flex gap-2">
+    <%= link_to 'Editar', edit_person_path(@person), class: 'btn btn-ghost' %>
+    <%= link_to 'Voltar', people_path, class: 'btn btn-ghost' %>
+  </div>
+</div>

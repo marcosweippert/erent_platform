@@ -1,0 +1,110 @@
+<div class="container mx-auto px-4 py-6">
+  <h1 class="text-3xl font-bold text-emerald-500 mb-6">Detalhes do Imóvel</h1>
+
+  <div class="bg-white shadow rounded p-6 space-y-8">
+    <div class="border-b pb-6">
+      <h2 class="text-lg font-semibold text-gray-800 mb-1">🏷️ Informações Gerais</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-0">
+        <p><strong>Referência:</strong> <%= @property.reference %></p>
+        <p><strong>Proprietário:</strong> <%= @property.owner.name %></p>
+        <p><strong>Valor Aluguel:</strong> <%= number_to_currency(@property.rent_value, unit: "R$ ", separator: ",", delimiter: ".") %></p>
+        <p><strong>Tipo:</strong> <%= t("activerecord.attributes.property.property_type.#{@property.property_type}") if @property.property_type.present? %></p>
+        <p><strong>Categoria:</strong> <%= t("activerecord.attributes.property.category.#{@property.category}") if @property.category.present? %></p>
+        <p><strong>Status:</strong>
+          <% if @property.reserved? %>
+            Reservado — <%= @property.reserved_tenant_name || 'sem inquilino' %>
+          <% else %>
+            <%= @property.status.present? ? @property.status.humanize : '-' %>
+          <% end %>
+        </p>
+      </div>
+    </div>
+
+    <div>
+      <h2 class="text-lg font-semibold text-gray-800 mb-1">📍 Endereço</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-0">
+        <p><strong>Rua:</strong> <%= @property.street %></p>
+        <p><strong>Número:</strong> <%= @property.number %></p>
+        <p><strong>Bairro:</strong> <%= @property.neighborhood %></p>
+        <p><strong>Cidade:</strong> <%= @property.city %></p>
+        <p><strong>Estado:</strong> <%= @property.state %></p>
+        <p><strong>CEP:</strong> <%= @property.zip_code %></p>
+        <p><strong>Complemento:</strong> <%= @property.complement %></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-8">
+    <h2 class="text-lg font-semibold text-gray-800 mb-1">📄 Contratos Vinculados</h2>
+    <% if @property.contracts.any? %>
+      <table class="min-w-full bg-white border rounded shadow text-sm">
+        <thead class="bg-gray-100">
+          <tr>
+            <th class="px-4 py-2 text-left">Contrato</th>
+            <th class="px-4 py-2 text-left">Inquilino</th>
+            <th class="px-4 py-2 text-left">Período</th>
+            <th class="px-4 py-2 text-left">Status</th>
+            <th class="px-4 py-2 text-left">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @property.contracts.each do |contract| %>
+            <tr class="border-t hover:bg-gray-50">
+              <td class="px-4 py-2"><%= contract.id %></td>
+              <td class="px-4 py-2"><%= contract.tenant.name %></td>
+              <td class="px-4 py-2"><%= l(contract.start_date, format: '%d/%m/%Y') %> a <%= l(contract.end_date, format: '%d/%m/%Y') %></td>
+            <td class="py-2 px-4"><%= t("activerecord.attributes.contract.status.#{contract.status}") if contract.status.present? %></td>
+              <td class="px-4 py-2">
+                <div class="flex gap-2">
+                  <%= link_to 'Detalhes', contract_path(contract), class: 'bg-green-600 text-white text-xs px-2 py-1 rounded hover:bg-green-700' %>
+                  <%= link_to 'Editar', edit_contract_path(contract), class: 'btn btn-warning btn-xs' %>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p class="text-gray-600 text-sm">Nenhum contrato vinculado a este imóvel.</p>
+    <% end %>
+  </div>
+
+  <div class="mt-8">
+    <h2 class="text-lg font-semibold text-gray-800 mb-1">📝 Histórico de Vistorias</h2>
+    <% if @property.inspections.any? %>
+      <table class="min-w-full bg-white border rounded shadow text-sm">
+        <thead class="bg-gray-100">
+          <tr>
+            <th class="px-4 py-2 text-left">Tipo</th>
+            <th class="px-4 py-2 text-left">Data</th>
+            <th class="px-4 py-2 text-left">Contrato</th>
+            <th class="px-4 py-2 text-left">Status</th>
+            <th class="px-4 py-2 text-left">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @property.inspections.order(inspection_date: :desc).each do |inspection| %>
+            <tr class="border-t hover:bg-gray-50">
+              <td class="px-4 py-2"><%= inspection.inspection_type&.humanize || '-' %></td>
+              <td class="px-4 py-2"><%= inspection.inspection_date.present? ? l(inspection.inspection_date, format: '%d/%m/%Y') : '-' %></td>
+              <td class="px-4 py-2">#<%= inspection.contract_id %></td>
+              <td class="px-4 py-2"><%= inspection.status&.humanize || '-' %></td>
+              <td class="px-4 py-2">
+                <%= link_to 'Ver termo', contract_inspection_path(inspection.contract, inspection), class: 'bg-green-600 text-white text-xs px-2 py-1 rounded hover:bg-green-700' %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p class="text-gray-600 text-sm">Nenhuma vistoria registrada para este imóvel.</p>
+    <% end %>
+  </div>
+
+  <div class="mt-6 flex gap-2">
+    <%= link_to 'Voltar', properties_path, class: 'btn btn-ghost' %>
+    <% if @property.available? %>
+      <%= link_to 'Alugar este imóvel', new_contract_path(property_id: @property.id), class: 'btn btn-accent' %>
+    <% end %>
+  </div>
+</div>

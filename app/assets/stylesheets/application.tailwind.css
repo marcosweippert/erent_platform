@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --erent-body: #f8fafc;
+    --erent-surface: #f1f5f9;
+    --erent-surface-alt: #e2e8f0;
+    --erent-text: #0f172a;
+    --erent-muted: #475569;
+    --erent-border: #cbd5e1;
+    --erent-primary: #22c55e;
+    --erent-accent: #16a34a;
+    --erent-card: #ffffff;
+    --erent-nav: #0f172a;
+    --erent-button-text: #ffffff;
+  }
+  :root.dark {
+    --erent-body: #020617;
+    --erent-surface: #111827;
+    --erent-surface-alt: #1f2937;
+    --erent-text: #f8fafc;
+    --erent-muted: #94a3b8;
+    --erent-border: #334155;
+    --erent-primary: #22c55e;
+    --erent-accent: #10b981;
+    --erent-card: #111827;
+    --erent-nav: #000000;
+    --erent-button-text: #f8fafc;
+  }
+  body {
+    background-color: var(--erent-body);
+    color: var(--erent-text);
+  }
+}
+
+@layer components {
+  .btn { @apply inline-flex items-center px-3 py-2 rounded text-sm font-medium transition focus:outline-none focus:ring-2 focus:ring-offset-2; }
+  .btn-primary { @apply bg-emerald-500 text-black hover:bg-emerald-600 dark:text-white dark:hover:bg-emerald-400; }
+  .btn-accent { @apply bg-emerald-600 text-white hover:bg-emerald-700; }
+  .btn-danger { @apply bg-red-600 text-white hover:bg-red-700; }
+  .btn-ghost { @apply bg-transparent border border-slate-400 text-slate-800 hover:bg-slate-100 dark:border-slate-600 dark:text-slate-100 dark:hover:bg-slate-700; }
+
+  .card { @apply bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-6 shadow-sm; }
+  .kpi-card { @apply card flex items-center justify-between gap-4; }
+  .input { @apply border rounded px-3 py-2 text-sm bg-slate-50 text-slate-900 dark:bg-slate-800 dark:text-slate-100; }
+  .chart-container { @apply relative h-64; }
+}

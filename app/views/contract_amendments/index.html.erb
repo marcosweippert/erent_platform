@@ -1,0 +1,42 @@
+<div class="container mx-auto px-4 py-6">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-semibold text-emerald-500 flex items-center gap-2">📑 Termos Aditivos</h1>
+    <%= link_to 'Novo Aditivo', new_contract_amendment_path, class: 'btn btn-accent text-xs' %>
+  </div>
+
+  <div class="bg-white shadow-md rounded-lg overflow-hidden border border-gray-200">
+    <table class="min-w-full text-sm text-left text-gray-800">
+      <thead class="bg-gray-100 text-gray-700">
+        <tr>
+          <th class="py-3 px-4">Contrato</th>
+          <th class="py-3 px-4">Início</th>
+          <th class="py-3 px-4">Fim</th>
+          <th class="py-3 px-4">Valor</th>
+          <th class="py-3 px-4">Período</th>
+          <th class="py-3 px-4">Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @contract_amendments.each do |amendment| %>
+          <tr class="border-t hover:bg-gray-50 transition duration-200">
+            <td class="py-2 px-4"><%= amendment.contract.id %></td>
+            <td class="py-2 px-4"><%= l amendment.amendment_start_date, format: "%d/%m/%Y" %></td>
+            <td class="py-2 px-4"><%= l amendment.amendment_end_date, format: "%d/%m/%Y" %></td>
+            <td class="py-2 px-4"><%= number_to_currency(amendment.amendment_rent_value, unit: "R$ ", separator: ",", delimiter: ".") %></td>
+            <td class="py-2 px-4"><%= amendment.amendment_contract_period %> meses</td>
+            <td class="py-2 px-4">
+              <div class="flex gap-x-2 items-center">
+                <%= link_to 'Ver', contract_amendment_path(amendment), class: 'bg-green-600 text-white text-xs px-2 py-1 rounded hover:bg-green-700' %>
+                <%= link_to 'Editar', edit_contract_amendment_path(amendment), class: 'btn btn-warning btn-xs' %>
+                <%= button_to 'Excluir', contract_amendment_path(amendment), method: :delete, data: { confirm: 'Tem certeza?' }, class: 'btn btn-error btn-xs' %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+  <div class="mt-6">
+    <%= link_to 'Voltar', root_path, class: 'btn btn-ghost btn-xs' %>
+  </div>
+</div>

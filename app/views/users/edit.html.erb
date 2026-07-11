@@ -1,0 +1,20 @@
+<div class="max-w-lg mx-auto bg-white p-8 rounded shadow">
+  <h1 class="text-2xl font-bold mb-6">Editar usuário</h1>
+
+  <p class="mb-4 text-sm text-gray-600">Deixe a senha em branco se não quiser alterá-la.</p>
+
+  <%= form_with model: @user, local: true do |form| %>
+    <% if @user.errors.any? %>
+      <div class="mb-4 rounded border border-red-300 bg-red-50 p-4 text-red-700">
+        <strong class="block font-semibold mb-2">Corrija os erros abaixo:</strong>
+        <ul class="list-disc list-inside space-y-1">
+          <% @user.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <%= render "form", form: form %>
+  <% end %>
+</div>
