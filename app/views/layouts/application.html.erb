@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <title><%= content_for?(:title) ? yield(:title) : "eRent Plataforma" %></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+  <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+  <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+  <%= javascript_importmap_tags %>
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+</head>
+
+<body data-controller="theme" class="bg-slate-950 text-slate-100 min-h-screen flex flex-col">
+  <nav class="bg-emerald-900 text-slate-100 px-4 py-3 shadow-xl border-b border-emerald-700">
+    <div class="container mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-6">
+        <a href="<%= root_path %>" class="text-xl font-bold hover:underline flex items-center gap-2">🏠 eRent</a>
+        <div class="flex space-x-6 text-sm">
+          <%# Pessoas Dropdown %>
+          <div x-data="{ open: false }" class="relative">
+            <button @click="open = !open" class="hover:underline focus:outline-none">Pessoas</button>
+            <div x-show="open" @click.away="open = false" class="absolute mt-1 w-56 bg-white text-gray-800 shadow-lg rounded z-50">
+              <%= link_to 'Cadastro', new_person_path, class: 'block px-4 py-2 hover:bg-gray-100 text-sm' %>
+              <%= link_to 'Listar', people_path, class: 'block px-4 py-2 hover:bg-gray-100 text-sm' %>
+            </div>
+          </div>
+
+          <%# Imóveis Dropdown %>
+          <div x-data="{ open: false }" class="relative">
+            <button @click="open = !open" class="hover:underline focus:outline-none">Imóveis</button>
+            <div x-show="open" @click.away="open = false" class="absolute mt-1 w-56 bg-white text-gray-800 shadow-lg rounded z-50">
+              <%= link_to 'Cadastro', new_property_path, class: 'block px-4 py-2 hover:bg-gray-100 text-sm' %>
+              <%= link_to 'Listar', properties_path, class: 'block px-4 py-2 hover:bg-gray-100 text-sm' %>
+              <%= link_to 'Reservados', reserved_properties_path, class: 'block px-4 py-2 hover:bg-gray-100 text-sm' %>
+            </div>
+          </div>
+
+          <%# Contratos Dropdown %>
+          <div x-data="{ open: false }" class="relative">
+            <button @click="open = !open" class="hover:underline focus:outline-none">Contratos</button>
+            <div x-show="open" @click.away="open = false" class="absolute mt-1 w-56 bg-white text-gray-800 shadow-lg rounded z-50">
+              <%= link_to 'Novo Contrato', new_contract_path, class: 'block px-4 py-2 hover:bg-gray-100 text-sm' %>
+              <%= link_to 'Listar Contratos', contracts_path, class: 'block px-4 py-2 hover:bg-gray-100 text-sm' %>
+              <%= link_to 'Listar Aditivos', contract_amendments_path, class: 'block px-4 py-2 hover:bg-gray-100 text-sm' %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center gap-4 text-sm">
+        <% if logged_in? %>
+          <span>Bem-vindo, <strong><%= current_user.name %></strong></span>
+          <% if current_user.master? %>
+            <%= link_to "Usuários", users_path, class: "hover:underline" %>
+          <% end %>
+          <%= button_to "Sair", session_path, method: :delete, class: "btn btn-ghost", form: { class: "inline" } %>
+        <% else %>
+          <%= link_to "Entrar", new_session_path, class: "hover:underline" %>
+          <% if User.none? %>
+            <%= link_to "Criar conta", new_user_path, class: "hover:underline" %>
+          <% end %>
+        <% end %>
+        <button data-action="click->theme#toggle" class="ml-2 btn btn-ghost">Modo</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container mx-auto mt-4 px-4">
+    <% flash.each do |type, message| %>
+      <div class="mb-4 p-3 rounded text-white flex items-center gap-2 <%= type == 'notice' ? 'bg-green-500' : 'bg-red-500' %>">
+        <span><%= type == 'notice' ? '✅' : '⚠️' %></span>
+        <span><%= message %></span>
+      </div>
+    <% end %>
+  </div>
+
+  <main class="container mx-auto px-4 py-6 flex-grow">
+    <%= yield %>
+  </main>
+
+  <footer class="bg-slate-950 border-t border-slate-800 text-center text-xs text-slate-400 py-4">
+    © <%= Time.now.year %> eRent. Todos os direitos reservados.
+  </footer>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var root = document.documentElement;
+      var stored = localStorage.getItem('erent:theme');
+      if (stored === 'dark' || (!stored && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        root.classList.add('dark');
+      }
+      // No quick rent fallback script necessary anymore.
+    });
+  </script>
+</body>
+</html>

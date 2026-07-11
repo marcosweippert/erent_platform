@@ -1,0 +1,37 @@
+pt-BR:
+  time:
+    formats:
+      default: "%d de %b de %Y, %H:%M"
+      short: "%d/%m/%Y"
+      long: "%d de %B de %Y, %H:%M:%S"
+      time: "%H:%M"
+  date:
+    formats:
+      default: "%d/%m/%Y"
+      short: "%d/%m/%Y"
+      long: "%d de %B de %Y"
+  activerecord:
+    attributes:
+      contract:
+        status:
+          active: Ativo
+          finalized: Finalizado
+      property:
+        status:
+          available: Disponível
+          rented: Alugado
+        property_type:
+          studio: Kitnet
+          house: Casa
+          warehouse: Barracão
+        category:
+          commercial: Comercial
+          residential: Residencial
+        person:
+          person_type:
+            tenant: Inquilino
+            owner: Proprietário
+          status:
+            available: Disponível
+            unavailable: Indisponível
+ 

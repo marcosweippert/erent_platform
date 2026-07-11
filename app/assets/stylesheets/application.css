@@ -1,0 +1,33 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS (and SCSS, if configured) file within this directory, lib/assets/stylesheets, or any plugin's
+ * vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any other CSS
+ * files in this directory. Styles in this file should be added after the last require_* statement.
+ * It is generally better to create a new file per style scope.
+ *
+ *= require_tree .
+ *= require_self
+ */
+
+body {
+  background: var(--erent-body);
+  color: var(--erent-text);
+}
+
+.bg-blue-700 { background-color: #22c55e !important; }
+.hover\:bg-blue-800:hover { background-color: #16a34a !important; }
+.bg-blue-600 { background-color: #16a34a !important; }
+.hover\:bg-blue-700:hover { background-color: #15803d !important; }
+.bg-gray-600 { background-color: #111827 !important; }
+.bg-gray-500 { background-color: #0f172a !important; }
+.bg-gray-700 { background-color: #0f172a !important; }
+.bg-gray-100 { background-color: #e2e8f0 !important; }
+.bg-gray-50 { background-color: #f8fafc !important; }
+.bg-slate-800 { background-color: #111827 !important; }
+.bg-white { background-color: var(--erent-card) !important; }
+.text-white { color: var(--erent-button-text) !important; }

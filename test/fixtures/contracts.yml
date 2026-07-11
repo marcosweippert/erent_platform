@@ -1,0 +1,41 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  property: one
+  tenant: one
+  owner: one
+  rent_value: 9.99
+  contract_period: 1
+  start_date: 2025-04-20
+  end_date: 2025-04-20
+  signature_date: 2025-04-20
+  interest_rate: 9.99
+  fine_rate: 9.99
+  guarantee: MyString
+  guarantee_value: 9.99
+  guarantee_payment_date: 2025-04-20
+  guarantee_installments: 1
+  payment_method: 1
+  payment_day: 1
+  first_payment_date: 2025-04-20
+  first_payment_value: 9.99
+
+two:
+  property: two
+  tenant: two
+  owner: two
+  rent_value: 9.99
+  contract_period: 1
+  start_date: 2025-04-20
+  end_date: 2025-04-20
+  signature_date: 2025-04-20
+  interest_rate: 9.99
+  fine_rate: 9.99
+  guarantee: MyString
+  guarantee_value: 9.99
+  guarantee_payment_date: 2025-04-20
+  guarantee_installments: 1
+  payment_method: 1
+  payment_day: 1
+  first_payment_date: 2025-04-20
+  first_payment_value: 9.99

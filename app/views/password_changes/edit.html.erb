@@ -1,0 +1,36 @@
+<div class="min-h-screen bg-slate-950 flex items-center justify-center py-12">
+  <div class="w-full max-w-md bg-slate-900/95 border border-emerald-800 p-8 rounded-3xl shadow-2xl">
+    <h1 class="text-3xl font-bold mb-6 text-center text-emerald-300">Redefinir senha</h1>
+
+    <div class="mb-4 rounded border border-emerald-200 bg-emerald-50 p-4 text-emerald-800 text-sm">
+      <p>Você precisa definir uma nova senha antes de continuar.</p>
+    </div>
+
+    <% if current_user.errors.any? %>
+      <div class="mb-4 rounded border border-red-300 bg-red-50 p-4 text-red-700 text-sm">
+        <strong class="block font-semibold mb-2">Corrija os erros abaixo:</strong>
+        <ul class="list-disc list-inside space-y-1">
+          <% current_user.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <%= form_with model: current_user, url: password_change_path, method: :patch, local: true do |form| %>
+      <div class="mb-4">
+        <%= form.label :password, "Nova senha", class: "block font-semibold mb-1 text-gray-700" %>
+        <%= form.password_field :password, class: "w-full rounded border border-gray-300 px-3 py-2" %>
+      </div>
+
+      <div class="mb-6">
+        <%= form.label :password_confirmation, "Confirmação da nova senha", class: "block font-semibold mb-1 text-gray-700" %>
+        <%= form.password_field :password_confirmation, class: "w-full rounded border border-gray-300 px-3 py-2" %>
+      </div>
+
+      <div class="flex justify-center">
+        <%= form.submit "Atualizar senha", class: "w-full btn btn-primary" %>
+      </div>
+    <% end %>
+  </div>
+</div>

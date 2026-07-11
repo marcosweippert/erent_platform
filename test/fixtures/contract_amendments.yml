@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contract: one
+  amendment_start_date: 2025-04-20
+  amendment_end_date: 2025-04-20
+  amendment_rent_value: 9.99
+  amendment_contract_period: MyString
+
+two:
+  contract: two
+  amendment_start_date: 2025-04-20
+  amendment_end_date: 2025-04-20
+  amendment_rent_value: 9.99
+  amendment_contract_period: MyString

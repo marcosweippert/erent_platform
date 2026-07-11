@@ -1,0 +1,58 @@
+<div class="container mx-auto px-4 py-6">
+  <h1 class="text-3xl font-bold text-emerald-500 mb-6">Termo de Vistoria</h1>
+
+  <div class="bg-white shadow rounded p-6 space-y-6">
+    <div class="border-b pb-4">
+      <p><strong>Tipo:</strong> <%= @inspection.inspection_type&.humanize || '-' %></p>
+      <p><strong>Natureza:</strong> <%= @inspection.entry_type&.humanize || '-' %></p>
+      <p><strong>Data:</strong> <%= @inspection.inspection_date.present? ? l(@inspection.inspection_date, format: '%d/%m/%Y') : '-' %></p>
+      <p><strong>Status:</strong> <%= @inspection.status&.humanize || '-' %></p>
+      <p><strong>Vistoriador:</strong> <%= @inspection.inspector_name.presence || '-' %></p>
+      <p><strong>Imóvel:</strong> <%= @inspection.property.reference %> - <%= @inspection.property.street %>, <%= @inspection.property.number %></p>
+      <p><strong>Contrato:</strong> #<%= @inspection.contract_id %></p>
+    </div>
+
+    <div>
+      <h2 class="text-lg font-semibold text-gray-800 mb-2">Itens avaliados</h2>
+      <% selected_items = @inspection.selected_checklist_items %>
+      <% if selected_items.present? %>
+        <div class="space-y-3">
+          <% selected_items.each do |_, item| %>
+            <div class="border rounded p-3">
+              <p><strong><%= item["label"] %></strong> — <%= item["status"].presence || 'ok' %></p>
+              <p class="text-sm text-gray-600">Status: <%= item["value"] ? 'Marcado' : 'Não marcado' %></p>
+              <% if item["observation"].present? %>
+                <p class="text-sm text-gray-600">Observação: <%= item["observation"] %></p>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-gray-600">Vistoria de entrada ou saída não realizado.</p>
+      <% end %>
+    </div>
+
+    <div>
+      <h2 class="text-lg font-semibold text-gray-800 mb-2">Observações</h2>
+      <p class="text-gray-700"><%= simple_format(@inspection.observations) %></p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <p><strong>Locador:</strong> <%= @inspection.landlord_name %></p>
+        <p><strong>CPF do locador:</strong> <%= @inspection.landlord_document %></p>
+        <p><strong>Assinatura do locador:</strong> <%= @inspection.landlord_signature_date.present? ? l(@inspection.landlord_signature_date, format: '%d/%m/%Y') : 'Pendente' %></p>
+      </div>
+      <div>
+        <p><strong>Locatário:</strong> <%= @inspection.tenant_name %></p>
+        <p><strong>CPF do locatário:</strong> <%= @inspection.tenant_document %></p>
+        <p><strong>Assinatura do locatário:</strong> <%= @inspection.tenant_signature_date.present? ? l(@inspection.tenant_signature_date, format: '%d/%m/%Y') : 'Pendente' %></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-6 flex flex-wrap gap-2">
+    <%= link_to "Imprimir PDF", pdf_contract_inspection_path(@contract, @inspection, format: :pdf), class: "btn btn-accent", target: "_blank", rel: "noopener" %>
+    <%= link_to "Voltar", contract_path(@contract), class: "btn btn-ghost" %>
+  </div>
+</div>

@@ -1,0 +1,18 @@
+<div style="font-family: Arial, sans-serif; color: #111;">
+  <h1>Bem-vindo ao eRent</h1>
+
+  <p>Olá <strong><%= @user.name %></strong>,</p>
+
+  <p>Seu usuário foi criado com sucesso no sistema eRent.</p>
+
+  <p>Use as credenciais abaixo para acessar a plataforma:</p>
+
+  <ul>
+    <li><strong>Email:</strong> <%= @user.email %></li>
+    <li><strong>Senha temporária:</strong> <%= @password %></li>
+  </ul>
+
+  <p>Ao acessar pela primeira vez, você será solicitado a definir uma nova senha.</p>
+
+  <p>Atenciosamente,<br>Equipe eRent</p>
+</div>
