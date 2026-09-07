@@ -22,11 +22,6 @@ properties, contracts, inspections, and contract amendments.
 
 3. Start development server:
 
-	bin/dev
-
-4. Open in browser:
-
-	http://localhost:3000
 
 ## Running Tests
 
